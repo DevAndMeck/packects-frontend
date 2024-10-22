@@ -37,7 +37,7 @@ export const Login = () => {
 
     return (
         <div className="flex flex-col items-center min-h-screen justify-center bg-gradient-to-b from-blue-600 to-gray-100 space-y-6 p-4">
-            <img src="/src/assets/logo.png" alt="Logo de la empresa" className="w-32 h-32 sm:w-40 sm:h-40" />
+            <img src="/assets/logo.png" alt="Logo de la empresa" className="w-32 h-32 sm:w-40 sm:h-40" />
 
             <h1 className="font-bold text-3xl sm:text-5xl text-white text-center">Packects</h1>
             <h2 className="font-semibold text-xl sm:text-2xl text-white text-center">Sistema de Optimización de Datos</h2>

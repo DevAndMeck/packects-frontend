@@ -12,7 +12,7 @@ const AdminSidebar = () => {
       
       {/* Logo de la empresa */}
       <div className='flex items-center justify-center py-8 bg-blue-600'>
-        <img src='/src/assets/a.png' alt='Logo de la empresa' className='w-36 h-36 rounded-full shadow-md' />
+        <img src='/assets/a.png' alt='Logo de la empresa' className='w-36 h-36 rounded-full shadow-md' />
       </div>
 
       {/* Links de navegación */}
