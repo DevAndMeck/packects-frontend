@@ -1,54 +1,46 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { FaCogs, FaSearchDollar, FaShopify, FaTachometerAlt, FaUser } from 'react-icons/fa';
+import { FaCogs, FaSearchDollar, FaShopify, FaTachometerAlt, FaUser, FaUsers } from 'react-icons/fa';
 
 const AdminSidebar = () => {
+  const navItems = [
+    { to: "/admin-dashboard", icon: FaTachometerAlt, label: "Dashboard" },
+    { to: "/admin-empleados", icon: FaUsers, label: "Empleados" },
+    { to: "/admin-ventas", icon: FaShopify, label: "Ventas" },
+    { to: "/admin-clientes", icon: FaUser, label: "Clientes" },
+    { to: "/admin-productos", icon: FaSearchDollar, label: "Productos" },
+    // { to: "/admin-administrar", icon: FaCogs, label: "Administrar" },
+  ];
+
   return (
-    <div className='bg-blue-600 text-white h-screen fixed left-0 top-0 bottom-0 w-64 lg:w-72 z-40 shadow-lg'>
-      {/* Título sección */}
-      <div className='bg-slate-900 h-16 flex items-center justify-center'>
-        <h3 className='text-2xl text-center font-bold tracking-wide'>Empleados</h3>
+    <div className="bg-gradient-to-b from-blue-600 to-yellow-700 text-white h-screen fixed left-0 top-0 bottom-0 w-64 lg:w-72 z-40 shadow-xl overflow-y-auto">
+      <div className="bg-black bg-opacity-30 h-16 flex items-center justify-center">
+        <h3 className="text-3xl text-center font-bold tracking-wide">MENU</h3>
       </div>
       
-      {/* Logo de la empresa */}
-      <div className='flex items-center justify-center py-8 bg-blue-600'>
-        <img src='/assets/a.png' alt='Logo de la empresa' className='w-36 h-36 rounded-full shadow-md' />
+      <div className="flex items-center justify-center py-8">
+        <img src="/assets/a.png" alt="Logo de la empresa" className="w-40 h-40 rounded-full shadow-lg border-4 border-white transition-transform duration-300 hover:scale-105" />
       </div>
 
-      {/* Links de navegación */}
-      <div className='px-4 mt-4 space-y-2'>
-        <NavLink 
-          to="/admin-dashboard" 
-          className='flex items-center text-lg font-medium space-x-4 block py-3 px-4 rounded-md hover:bg-slate-700 transition duration-200 transform hover:scale-105'>
-          <FaTachometerAlt className='text-2xl' />
-          <span>DashBoard</span>
-        </NavLink>
-
-        <NavLink to="/admin-empleados" className='flex items-center text-lg font-medium space-x-4 block py-3 px-4 rounded-md hover:bg-slate-700 transition duration-200 transform hover:scale-105'>
-          <FaUser className='text-2xl' />
-          <span>Empleados</span>
-        </NavLink>
-
-        <NavLink to="/admin-ventas" className='flex items-center text-lg font-medium space-x-4 block py-3 px-4 rounded-md hover:bg-slate-700 transition duration-200 transform hover:scale-105'>
-          <FaShopify className='text-2xl' />
-          <span>Ventas</span>
-        </NavLink>
-
-        <NavLink to="/admin-clientes" className='flex items-center text-lg font-medium space-x-4 block py-3 px-4 rounded-md hover:bg-slate-700 transition duration-200 transform hover:scale-105'>
-          <FaUser className='text-2xl' />
-          <span>Clientes</span>
-        </NavLink>
-
-        <NavLink to="/admin-productos" className='flex items-center text-lg font-medium space-x-4 block py-3 px-4 rounded-md hover:bg-slate-700 transition duration-200 transform hover:scale-105'>
-          <FaSearchDollar className='text-2xl' />
-          <span>Productos</span>
-        </NavLink>
-
-        {/* <NavLink to="/admin-administrar" className='flex items-center text-lg font-medium space-x-4 block py-3 px-4 rounded-md hover:bg-slate-700 transition duration-200 transform hover:scale-105'>
-          <FaCogs className='text-2xl' />
-          <span>Administrar</span>
-        </NavLink> */}
-      </div>
+      <nav className="px-4 mt-4 space-y-2">
+        {navItems.map((item) => (
+          <NavLink 
+            key={item.to}
+            to={item.to} 
+            className={({ isActive }) => `
+              flex items-center text-lg font-medium space-x-4 py-3 px-4 rounded-lg
+              transition duration-300 ease-in-out transform hover:scale-102
+              ${isActive 
+                ? 'bg-white text-blue-800 shadow-md' 
+                : 'hover:bg-blue-600 hover:bg-opacity-50'
+              }
+            `}
+          >
+            <item.icon className="text-2xl" />
+            <span>{item.label}</span>
+          </NavLink>
+        ))}
+      </nav>
     </div>
   );
 };

@@ -14,7 +14,6 @@ const Employees = () => {
   });
   const [editingEmployee, setEditingEmployee] = useState(null);
 
-  // Cargar los empleados cuando el componente se monta
   useEffect(() => {
     const loadEmployees = async () => {
       const allEmployees = await fetchEmployees();
@@ -78,16 +77,16 @@ const Employees = () => {
 
   return (
     <Layout>
-      <div className="p-6">
-        <h3 className="text-2xl font-bold mb-4">Lista de Empleados</h3>
-        <form onSubmit={handleSubmit} className="mb-4">
+      <div className="p-8 bg-gray-50 min-h-screen">
+        <h3 className="text-3xl font-semibold mb-6 text-center text-gray-700">Gestión de Empleados</h3>
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 bg-white p-6 rounded-lg shadow-lg">
           <input
             type="text"
             name="id"
             placeholder="ID del Empleado"
             value={formData.id}
             onChange={handleInputChange}
-            className="border p-2 mr-2"
+            className="border border-gray-300 rounded-lg p-2"
             required
           />
           <input
@@ -96,7 +95,7 @@ const Employees = () => {
             placeholder="Nombre del Empleado"
             value={formData.name}
             onChange={handleInputChange}
-            className="border p-2 mr-2"
+            className="border border-gray-300 rounded-lg p-2"
             required
           />
           <input
@@ -105,7 +104,7 @@ const Employees = () => {
             placeholder="Puesto"
             value={formData.position}
             onChange={handleInputChange}
-            className="border p-2 mr-2"
+            className="border border-gray-300 rounded-lg p-2"
             required
           />
           <input
@@ -114,53 +113,64 @@ const Employees = () => {
             placeholder="Correo Electrónico"
             value={formData.email}
             onChange={handleInputChange}
-            className="border p-2 mr-2"
+            className="border border-gray-300 rounded-lg p-2"
             required
           />
           <input
             type="file"
             onChange={handleFileChange}
-            className="border p-2 mr-2"
+            className="border border-gray-300 rounded-lg p-2"
           />
-          <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded-lg">
+          <button
+            type="submit"
+            className="bg-blue-600 text-white font-semibold rounded-lg py-2 px-4 hover:bg-blue-500 transition duration-300 ease-in-out"
+          >
             {editingEmployee ? 'Actualizar Empleado' : 'Agregar Empleado'}
           </button>
         </form>
-        <table className="min-w-full bg-white">
-          <thead className="bg-gray-200">
-            <tr>
-              <th className="py-2 px-4">ID</th>
-              <th className="py-2 px-4">Nombre</th>
-              <th className="py-2 px-4">Puesto</th>
-              <th className="py-2 px-4">Correo Electrónico</th>
-              <th className="py-2 px-4">Foto</th>
-              <th className="py-2 px-4">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {employees.map((employee) => (
-              <tr key={employee._id} className="border-t">
-                <td className="py-2 px-4 text-center">{employee.id}</td>
-                <td className="py-2 px-4 text-center">{employee.name}</td>
-                <td className="py-2 px-4 text-center">{employee.position}</td>
-                <td className="py-2 px-4 text-center">{employee.email}</td>
-                <td className="py-2 px-4 text-center">
-                  {employee.photo && (
-                    <img src={employee.photo} alt={employee.name} className="h-16 w-16 object-cover" />
-                  )}
-                </td>
-                <td className="py-2 px-4 text-center">
-                  <button onClick={() => handleEdit(employee)} className="mr-2 px-2 py-1 bg-sky-500 text-white rounded">
-                    Editar
-                  </button>
-                  <button onClick={() => handleDelete(employee._id)} className="px-2 py-1 bg-yellow-700 text-white rounded">
-                    Eliminar
-                  </button>
-                </td>
+        <div className="overflow-x-auto">
+          <table className="min-w-full table-auto bg-white rounded-lg shadow-lg">
+            <thead className="bg-blue-600 text-white">
+              <tr>
+                <th className="py-3 px-4">ID</th>
+                <th className="py-3 px-4">Nombre</th>
+                <th className="py-3 px-4">Puesto</th>
+                <th className="py-3 px-4">Correo Electrónico</th>
+                <th className="py-3 px-4">Foto</th>
+                <th className="py-3 px-4">Acciones</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {employees.map((employee) => (
+                <tr key={employee._id} className="border-b">
+                  <td className="py-3 px-4 text-center">{employee.id}</td>
+                  <td className="py-3 px-4 text-center">{employee.name}</td>
+                  <td className="py-3 px-4 text-center">{employee.position}</td>
+                  <td className="py-3 px-4 text-center">{employee.email}</td>
+                  <td className="py-3 px-4 text-center">
+                    {employee.photo && (
+                      <img src={employee.photo} alt={employee.name} className="h-16 w-16 object-cover rounded-full shadow-md" />
+                    )}
+                  </td>
+                  <td className="py-3 px-4 text-center">
+                    <button
+                      onClick={() => handleEdit(employee)}
+                      className="mr-2 bg-yellow-400 text-white px-3 py-1 rounded-lg hover:bg-yellow-300 transition duration-300 ease-in-out"
+                    >
+                      Editar
+                    </button>
+                    <button
+                      onClick={() => handleDelete(employee._id)}
+                      className="bg-red-600 text-white px-3 py-1 rounded-lg hover:bg-red-500 transition duration-300 ease-in-out"
+                    >
+                      Eliminar
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </Layout>
   );

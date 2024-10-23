@@ -1,30 +1,44 @@
 import React from 'react';
 import { useAuth } from '../../context/authContext';
 import { useNavigate } from 'react-router-dom';
-import { FaSignOutAlt } from 'react-icons/fa'; // Asegúrate de instalar react-icons
+import { FaSignOutAlt, FaUser } from 'react-icons/fa';
 
 const Navbar = () => {
-    const { user, logout } = useAuth(); // Asegúrate de que 'logout' esté disponible en el contexto
-    const navigate = useNavigate(); // Usar el hook useNavigate
+    const { user, logout } = useAuth();
+    const navigate = useNavigate();
 
     const handleLogout = () => {
-        logout(); // Llama a la función de logout
-        navigate('/login'); // Redirige al login después de cerrar sesión
+        logout();
+        navigate('/login');
     };
 
     return (
-        <div className='flex items-center justify-between h-16 bg-slate-900 text-white px-5 shadow-md'>
-            <p className='mx-10 text-xl font-bold'>
-                Bienvenido, <span className='font-semibold'>{user ? user.name : 'Admin'}</span>
-            </p>
-            <button 
-                className='flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-800 text-white rounded-lg transition duration-200 shadow-lg transform hover:scale-105'
-                onClick={handleLogout} // Maneja el evento de clic
-            >
-                <FaSignOutAlt className='mr-2' /> {/* Icono de salida */}
-                Cerrar Sesion
-            </button>
-        </div>
+        <nav className="bg-gradient-to-r from-blue-600 to-yellow-600 text-white shadow-lg">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="flex items-center justify-between h-16">
+                    <div className="flex items-center">
+                        <FaUser className="h-8 w-8 text-white" />
+                        <div className="ml-4">
+                            <p className="text-lg font-medium">
+                                Bienvenido,{' '}
+                                <span className="font-bold animate-pulse">
+                                    {user ? user.name : 'Admin'}
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                    <div>
+                        <button 
+                            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105"
+                            onClick={handleLogout}
+                        >
+                            <FaSignOutAlt className="mr-2 h-4 w-4" />
+                            Cerrar Sesión
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
     );
 };
 

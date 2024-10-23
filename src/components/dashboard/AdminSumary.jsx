@@ -1,150 +1,131 @@
 import React, { useEffect, useState } from 'react';
-import SummaryCard from './SummaryCard';
-import { FaSearchDollar, FaShopify, FaUser } from 'react-icons/fa';
-import { Line } from 'react-chartjs-2';
-import { Chart, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
-import { Link } from 'react-router-dom'; // Para manejar la navegación
+import { Link } from 'react-router-dom';
+import { FaUsers, FaShoppingCart, FaUserTie, FaBoxes, FaChartLine } from 'react-icons/fa';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar } from 'recharts';
+import { getAllSales, openDB } from '../salesBD';
+import { getProducts } from '../productoDB';
+import { fetchEmployees } from '../employeesDB';
+import { loadClients } from '../clientBD';
 
-// Registrar los componentes de Chart.js
-Chart.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
+const SummaryCard = ({ icon, text, number, color, to }) => (
+  <Link to={to} className="transform transition duration-500 hover:scale-105 w-full">
+    <div className={`${color} rounded-xl shadow-lg p-6 flex items-center justify-between h-full`}>
+      <div className="flex items-center">
+        {React.cloneElement(icon, { className: "text-white text-4xl mr-4" })}
+        <div>
+          <p className="text-white text-lg font-semibold">{text}</p>
+          <p className="text-white text-3xl font-bold">{number}</p>
+        </div>
+      </div>
+      <FaChartLine className="text-white text-2xl" />
+    </div>
+  </Link>
+);
 
 const AdminSummary = () => {
   const [employees, setEmployees] = useState([]);
   const [sales, setSales] = useState([]);
   const [clients, setClients] = useState([]);
   const [products, setProducts] = useState([]);
+  const [salesData, setSalesData] = useState([]);
+  const [productData, setProductData] = useState([]);
 
-  // Cargar datos desde localStorage cuando el componente se monte
   useEffect(() => {
-    const storedEmployees = JSON.parse(localStorage.getItem('employees')) || [];
-    const storedSales = JSON.parse(localStorage.getItem('sales')) || [];
-    const storedClients = JSON.parse(localStorage.getItem('clients')) || [];
-    const storedProducts = JSON.parse(localStorage.getItem('products')) || [];
+    const fetchData = async () => {
+      const fetchedEmployees = await fetchEmployees();
+      const db = await openDB();
+      const fetchedSales = await getAllSales(db);
+      const fetchedClients = await loadClients();
+      const fetchedProducts = await getProducts();
 
-    setEmployees(storedEmployees);
-    setSales(storedSales);
-    setClients(storedClients);
-    setProducts(storedProducts);
+      setEmployees(fetchedEmployees);
+      setSales(fetchedSales);
+      setClients(fetchedClients);
+      setProducts(fetchedProducts);
+
+      // Prepare sales data for chart
+      const salesByMonth = fetchedSales.reduce((acc, sale) => {
+        const date = new Date(sale.date);
+        const month = date.toLocaleString('default', { month: 'short' });
+        acc[month] = (acc[month] || 0) + sale.total;
+        return acc;
+      }, {});
+
+      setSalesData(Object.entries(salesByMonth).map(([month, total]) => ({ month, total })));
+
+      // Prepare product data for chart
+      const productCounts = fetchedProducts.reduce((acc, product) => {
+        acc[product.name] = (acc[product.name] || 0) + 1;
+        return acc;
+      }, {});
+
+      setProductData(Object.entries(productCounts).map(([name, count]) => ({ name, count })));
+    };
+
+    fetchData();
   }, []);
 
-  // Obtener el total de ventas del mes actual
-  const getMonthlySales = () => {
-    const currentMonth = new Date().getMonth();
-    return sales.filter((sale) => new Date(sale.date).getMonth() === currentMonth).length;
-  };
-
-  // Simular datos de ventas si no hay datos en localStorage
-  const salesData = {
-    daily: sales.map(sale => sale.amount) || [100, 200, 150, 250, 300, 400, 350],
-    weekly: [700, 800, 750, 850, 900, 950, 1000], // Simulación de datos semanales
-    monthly: [3000, 3500, 3300, 3800, 4200, 4500, 4700] // Simulación de datos mensuales
-  };
-
-  // Datos para el gráfico de ventas diarias
-  const dailySalesChart = {
-    labels: ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'],
-    datasets: [
-      {
-        label: 'Ventas Diarias',
-        data: salesData.daily,
-        borderColor: 'rgba(75, 192, 192, 1)',
-        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-        borderWidth: 2,
-        fill: true,
-      },
-    ],
-  };
-
-  // Datos para el gráfico de ventas semanales
-  const weeklySalesChart = {
-    labels: ['Semana 1', 'Semana 2', 'Semana 3', 'Semana 4'],
-    datasets: [
-      {
-        label: 'Ventas Semanales',
-        data: salesData.weekly.slice(0, 4),
-        borderColor: 'rgba(255, 206, 86, 1)',
-        backgroundColor: 'rgba(255, 206, 86, 0.2)',
-        borderWidth: 2,
-        fill: true,
-      },
-    ],
-  };
-
-  // Datos para el gráfico de ventas mensuales
-  const monthlySalesChart = {
-    labels: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio'],
-    datasets: [
-      {
-        label: 'Ventas Mensuales',
-        data: salesData.monthly,
-        borderColor: 'rgba(153, 102, 255, 1)',
-        backgroundColor: 'rgba(153, 102, 255, 0.2)',
-        borderWidth: 2,
-        fill: true,
-      },
-    ],
-  };
-
   return (
-    <div className="p-6 ml-12 lg:ml-12 pt-16">
-      <h3 className="text-2xl font-bold text-slate-900">Panel de Control</h3>
-
-      {/* Resumen con las tarjetas */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
-        <Link to="/admin-empleados">
+    <div className="bg-gray-100 min-h-screen">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-12 py-8">
+        <h1 className="text-4xl font-bold text-gray-800 mb-8">Dashboard</h1>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <SummaryCard
-            icon={<FaUser className="text-white text-3xl" />}
+            icon={<FaUsers />}
             text="Total de Empleados"
             number={employees.length}
-            color="bg-teal-600"
+            color="bg-blue-600"
+            to="/admin-empleados"
           />
-        </Link>
-        <Link to="/admin-ventas">
           <SummaryCard
-            icon={<FaShopify className="text-white text-3xl" />}
+            icon={<FaShoppingCart />}
             text="Total de Ventas"
-            number={getMonthlySales()}
+            number={sales.length}
             color="bg-yellow-600"
+            to="/admin-ventas"
           />
-        </Link>
-        <Link to="/admin-clientes">
           <SummaryCard
-            icon={<FaUser className="text-white text-3xl" />}
+            icon={<FaUserTie />}
             text="Total de Clientes"
             number={clients.length}
-            color="bg-blue-600"
+            color="bg-green-600"
+            to="/admin-clientes"
           />
-        </Link>
-        <Link to="/admin-productos">
           <SummaryCard
-            icon={<FaSearchDollar className="text-white text-3xl" />}
+            icon={<FaBoxes />}
             text="Total de Productos"
             number={products.length}
-            color="bg-green-600"
+            color="bg-purple-600"
+            to="/admin-productos"
           />
-        </Link>
-      </div>
-
-      {/* Gráficos de ventas */}
-      <div className="mt-10">
-        <h3 className="text-xl font-semibold text-slate-800 mb-4">Gráficas de Ventas</h3>
-
-        {/* Gráfico de Ventas Diarias */}
-        <div className="mb-8">
-          <h4 className="text-lg font-medium text-slate-700">Ventas Diarias</h4>
-          <Line data={dailySalesChart} />
         </div>
-
-        {/* Gráfico de Ventas Semanales */}
-        <div className="mb-8">
-          <h4 className="text-lg font-medium text-slate-700">Ventas Semanales</h4>
-          <Line data={weeklySalesChart} />
-        </div>
-
-        {/* Gráfico de Ventas Mensuales */}
-        <div>
-          <h4 className="text-lg font-medium text-slate-700">Ventas Mensuales</h4>
-          <Line data={monthlySalesChart} />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="bg-white rounded-xl shadow-lg p-6">
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">Ventas Mensuales</h2>
+            <ResponsiveContainer width="100%" height={400}>
+              <LineChart data={salesData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="month" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Line type="monotone" dataKey="total" stroke="#8884d8" strokeWidth={2} activeDot={{ r: 8 }} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="bg-white rounded-xl shadow-lg p-6">
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">Productos por Categoría</h2>
+            <ResponsiveContainer width="100%" height={400}>
+              <BarChart data={productData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="count" fill="#82ca9d" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
         </div>
       </div>
     </div>

@@ -50,82 +50,89 @@ const Clients = () => {
 
   return (
     <Layout>
-      <div className="p-6">
-        <h3 className="text-2xl font-bold mb-4">Clientes</h3>
+      <div className="p-8 bg-gray-50 min-h-screen">
+        <h3 className="text-3xl font-bold text-gray-800 mb-6">Clientes</h3>
 
-        <input
-          type="text"
-          placeholder="Buscar por DPI, NIT o Teléfono"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="mb-4 p-2 border rounded w-full"
-        />
-
-        {/* Formulario para agregar nuevo cliente */}
-        <div className="mb-6">
-          <h4 className="text-xl font-semibold">Agregar Cliente</h4>
-          {['name', 'address', 'email', 'dpi', 'nit', 'phone'].map(field => (
-            <input
-              key={field}
-              type="text"
-              placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
-              value={newClient[field]}
-              onChange={(e) => setNewClient({ ...newClient, [field]: e.target.value })}
-              className="p-2 border rounded mr-2 mb-2"
-            />
-          ))}
-          <button onClick={handleAddClient} className="bg-blue-600 text-white py-2 px-4 rounded">Agregar Cliente</button>
+        <div className="mb-8">
+          <input
+            type="text"
+            placeholder="Buscar por DPI, NIT o Teléfono"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full p-3 rounded-lg border shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
+          />
         </div>
 
-        {/* Tabla de clientes */}
-        <table className="min-w-full bg-white">
-          <thead className="bg-gray-200">
-            <tr>
-              <th className="py-2 px-4">ID</th>
-              <th className="py-2 px-4">Nombre</th>
-              <th className="py-2 px-4">Dirección</th>
-              <th className="py-2 px-4">Correo Electrónico</th>
-              <th className="py-2 px-4">DPI</th>
-              <th className="py-2 px-4">NIT</th>
-              <th className="py-2 px-4">Teléfono</th>
-              <th className="py-2 px-4">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredClients.map(client => (
-              <tr key={client.id} className="border-t">
-                <td className="py-2 px-4 text-center">{client.id}</td>
-                <td className="py-2 px-4 text-center">{client.name}</td>
-                <td className="py-2 px-4 text-center">{client.address}</td>
-                <td className="py-2 px-4 text-center">{client.email}</td>
-                <td className="py-2 px-4 text-center">{client.dpi}</td>
-                <td className="py-2 px-4 text-center">{client.nit}</td>
-                <td className="py-2 px-4 text-center">{client.phone}</td>
-                <td className="py-2 px-4 text-center">
-                  <button onClick={() => setEditingClient(client)} className="bg-sky-500 text-white py-1 px-2 rounded">Editar</button>
-                  <button onClick={() => handleDeleteClient(client.id)} className="bg-yellow-700 text-white py-1 px-2 rounded ml-2">Eliminar</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-
-        {/* Formulario para editar cliente */}
-        {editingClient && (
-          <div className="mt-6">
-            <h4 className="text-xl font-semibold">Editar Cliente</h4>
+        {/* Formulario para agregar nuevo cliente */}
+        <div className="mb-10 bg-white p-6 rounded-lg shadow-lg">
+          <h4 className="text-xl font-semibold text-gray-700 mb-4">Agregar Cliente</h4>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {['name', 'address', 'email', 'dpi', 'nit', 'phone'].map(field => (
               <input
                 key={field}
                 type="text"
                 placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
-                value={editingClient[field]}
-                onChange={(e) => setEditingClient({ ...editingClient, [field]: e.target.value })}
-                className="p-2 border rounded mr-2 mb-2"
+                value={newClient[field]}
+                onChange={(e) => setNewClient({ ...newClient, [field]: e.target.value })}
+                className="p-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             ))}
-            <button onClick={handleEditClient} className="bg-green-500 text-white py-2 px-4 rounded">Guardar Cambios</button>
-            <button onClick={() => setEditingClient(null)} className="bg-red-500 text-white py-2 px-4 rounded ml-2">Cancelar</button>
+          </div>
+          <button onClick={handleAddClient} className="mt-4 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-500 transition">
+            Agregar Cliente
+          </button>
+        </div>
+
+        {/* Tabla de clientes */}
+        <div className="overflow-x-auto">
+          <table className="min-w-full bg-white rounded-lg shadow-lg">
+            <thead className="bg-blue-100">
+              <tr>
+                {['ID', 'Nombre', 'Dirección', 'Correo Electrónico', 'DPI', 'NIT', 'Teléfono', 'Acciones'].map(header => (
+                  <th key={header} className="py-3 px-4 text-gray-700 font-semibold text-left">{header}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {filteredClients.map(client => (
+                <tr key={client.id} className="border-b">
+                  <td className="py-3 px-4">{client.id}</td>
+                  <td className="py-3 px-4">{client.name}</td>
+                  <td className="py-3 px-4">{client.address}</td>
+                  <td className="py-3 px-4">{client.email}</td>
+                  <td className="py-3 px-4">{client.dpi}</td>
+                  <td className="py-3 px-4">{client.nit}</td>
+                  <td className="py-3 px-4">{client.phone}</td>
+                  <td className="py-3 px-4">
+                    <button onClick={() => setEditingClient(client)} className="bg-yellow-500 text-white py-1 px-3 rounded-lg hover:bg-yellow-400 transition">Editar</button>
+                    <button onClick={() => handleDeleteClient(client.id)} className="bg-red-500 text-white py-1 px-3 rounded-lg hover:bg-red-400 transition ml-2">Eliminar</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Formulario para editar cliente */}
+        {editingClient && (
+          <div className="mt-10 bg-white p-6 rounded-lg shadow-lg">
+            <h4 className="text-xl font-semibold text-gray-700 mb-4">Editar Cliente</h4>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {['name', 'address', 'email', 'dpi', 'nit', 'phone'].map(field => (
+                <input
+                  key={field}
+                  type="text"
+                  placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
+                  value={editingClient[field]}
+                  onChange={(e) => setEditingClient({ ...editingClient, [field]: e.target.value })}
+                  className="p-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              ))}
+            </div>
+            <div className="mt-4">
+              <button onClick={handleEditClient} className="bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-400 transition">Guardar Cambios</button>
+              <button onClick={() => setEditingClient(null)} className="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-400 transition ml-2">Cancelar</button>
+            </div>
           </div>
         )}
       </div>

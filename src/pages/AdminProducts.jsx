@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
-import { addProduct, getProducts, deleteProduct } from '../components/productoDB'; // Asegúrate de importar correctamente
+import { addProduct, getProducts, deleteProduct } from '../components/productoDB';
 
 const Products = () => {
   const [products, setProducts] = useState([]);
@@ -14,7 +14,7 @@ const Products = () => {
   const [imagePreview, setImagePreview] = useState(null);
 
   useEffect(() => {
-    loadProducts(); // Cargar productos al iniciar el componente
+    loadProducts();
   }, []);
 
   const loadProducts = async () => {
@@ -52,11 +52,9 @@ const Products = () => {
       image: imagePreview,
     };
 
-    // Agregar o actualizar producto en IndexedDB
     await addProduct(newProduct);
-    loadProducts(); // Recargar productos
+    loadProducts();
 
-    // Limpiar el formulario
     setFormData({ name: '', amount: '', barcode: '', image: null });
     setImagePreview(null);
     setEditingProduct(null);
@@ -71,87 +69,92 @@ const Products = () => {
   const handleDelete = async (id) => {
     if (window.confirm('¿Estás seguro de que deseas eliminar este producto?')) {
       await deleteProduct(id);
-      loadProducts(); // Recargar productos
+      loadProducts();
     }
   };
 
   return (
     <Layout>
-      <div className="p-6">
-        <h3 className="text-2xl font-bold mb-4">Productos</h3>
-        <form onSubmit={handleSubmit} className="mb-4">
-          <input
-            type="text"
-            name="name"
-            placeholder="Nombre del Producto"
-            value={formData.name}
-            onChange={handleInputChange}
-            className="border p-2 mr-2"
-            required
-          />
-          <input
-            type="number"
-            name="amount"
-            placeholder="Monto"
-            value={formData.amount}
-            onChange={handleInputChange}
-            className="border p-2 mr-2"
-            required
-          />
-          <input
-            type="text"
-            name="barcode"
-            placeholder="Código de Barras"
-            value={formData.barcode}
-            onChange={handleInputChange}
-            className="border p-2 mr-2"
-            required
-          />
-          <input
-            type="file"
-            onChange={handleFileChange}
-            className="border p-2 mr-2"
-            required
-          />
-          <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded-lg">
+      <div className="p-8 bg-gray-50 min-h-screen">
+        <h3 className="text-3xl font-bold text-gray-800 mb-6">Productos</h3>
+        
+        <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-lg mb-6">
+          <h4 className="text-xl font-semibold text-gray-700 mb-4">{editingProduct ? 'Editar Producto' : 'Agregar Producto'}</h4>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <input
+              type="text"
+              name="name"
+              placeholder="Nombre del Producto"
+              value={formData.name}
+              onChange={handleInputChange}
+              className="p-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+            <input
+              type="number"
+              name="amount"
+              placeholder="Monto"
+              value={formData.amount}
+              onChange={handleInputChange}
+              className="p-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+            <input
+              type="text"
+              name="barcode"
+              placeholder="Código de Barras"
+              value={formData.barcode}
+              onChange={handleInputChange}
+              className="p-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+            <input
+              type="file"
+              onChange={handleFileChange}
+              className="p-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+            {imagePreview && <img src={imagePreview} alt="Preview" className="h-32 w-32 object-cover rounded-lg shadow-sm" />}
+          </div>
+          <button type="submit" className="mt-4 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-500 transition">
             {editingProduct ? 'Actualizar Producto' : 'Agregar Producto'}
           </button>
         </form>
-        <table className="min-w-full bg-white">
-          <thead className="bg-gray-200">
-            <tr>
-              <th className="py-2 px-4">ID</th>
-              <th className="py-2 px-4">Nombre</th>
-              <th className="py-2 px-4">Monto</th>
-              <th className="py-2 px-4">Código de Barras</th>
-              <th className="py-2 px-4">Imagen</th>
-              <th className="py-2 px-4">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {products.map((product) => (
-              <tr key={product._id} className="border-t">
-                <td className="py-2 px-4 text-center">{product._id}</td>
-                <td className="py-2 px-4 text-center">{product.name}</td>
-                <td className="py-2 px-4 text-center">Q.{product.amount}</td>
-                <td className="py-2 px-4 text-center">{product.barcode}</td>
-                <td className="py-2 px-4 text-center">
-                  {product.image && (
-                    <img src={product.image} alt={product.name} className="h-16 w-16" />
-                  )}
-                </td>
-                <td className="py-2 px-4 text-center">
-                  <button onClick={() => handleEdit(product)} className="mr-2 px-2 py-1 bg-sky-500 text-white rounded">
-                    Editar
-                  </button>
-                  <button onClick={() => handleDelete(product._id)} className="px-2 py-1 bg-yellow-700 text-white rounded">
-                    Eliminar
-                  </button>
-                </td>
+
+        <div className="overflow-x-auto">
+          <table className="min-w-full bg-white rounded-lg shadow-lg">
+            <thead className="bg-blue-100">
+              <tr>
+                {['ID', 'Nombre', 'Monto', 'Código de Barras', 'Imagen', 'Acciones'].map(header => (
+                  <th key={header} className="py-3 px-4 text-gray-700 font-semibold text-left">{header}</th>
+                ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {products.map((product) => (
+                <tr key={product._id} className="border-b hover:bg-gray-100 transition">
+                  <td className="py-3 px-4">{product._id}</td>
+                  <td className="py-3 px-4">{product.name}</td>
+                  <td className="py-3 px-4">Q.{product.amount}</td>
+                  <td className="py-3 px-4">{product.barcode}</td>
+                  <td className="py-3 px-4">
+                    {product.image && (
+                      <img src={product.image} alt={product.name} className="h-16 w-16 object-cover rounded-lg shadow-sm" />
+                    )}
+                  </td>
+                  <td className="py-3 px-4">
+                    <button onClick={() => handleEdit(product)} className="mr-2 px-2 py-1 bg-sky-500 text-white rounded-lg hover:bg-sky-400 transition">
+                      Editar
+                    </button>
+                    <button onClick={() => handleDelete(product._id)} className="px-2 py-1 bg-red-500 text-white rounded-lg hover:bg-red-400 transition">
+                      Eliminar
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </Layout>
   );
