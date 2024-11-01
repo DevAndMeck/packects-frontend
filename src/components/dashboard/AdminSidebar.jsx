@@ -13,7 +13,7 @@ const AdminSidebar = () => {
   ];
 
   return (
-    <div className="bg-gradient-to-b from-blue-600 to-yellow-700 text-white h-screen fixed left-0 top-0 bottom-0 w-64 lg:w-72 z-40 shadow-xl overflow-y-auto">
+    <div className="bg-gradient-to-b from-blue-600 to-slate-950 text-white h-screen fixed left-0 top-0 bottom-0 w-64 lg:w-72 z-40 shadow-xl overflow-y-auto">
       <div className="bg-black bg-opacity-30 h-16 flex items-center justify-center">
         <h3 className="text-3xl text-center font-bold tracking-wide">MENU</h3>
       </div>

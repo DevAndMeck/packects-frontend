@@ -68,7 +68,7 @@ const AdminSummary = () => {
   return (
     <div className="bg-gray-100 min-h-screen">
       <div className="container mx-auto px-4 sm:px-6 lg:px-12 py-8">
-        <h1 className="text-4xl font-bold text-gray-800 mb-8">Dashboard</h1>
+        <h1 className="text-4xl font-bold text-center text-blue-600 mb-8">Dashboard</h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <SummaryCard
             icon={<FaUsers />}
@@ -101,7 +101,7 @@ const AdminSummary = () => {
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="bg-white rounded-xl shadow-lg p-6">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">Ventas Mensuales</h2>
+            <h2 className="text-2xl font-bold text-center text-blue-600 mb-4">Ventas Mensuales</h2>
             <ResponsiveContainer width="100%" height={400}>
               <LineChart data={salesData}>
                 <CartesianGrid strokeDasharray="3 3" />
@@ -114,7 +114,7 @@ const AdminSummary = () => {
             </ResponsiveContainer>
           </div>
           <div className="bg-white rounded-xl shadow-lg p-6">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">Productos por Categoría</h2>
+            <h2 className="text-2xl font-bold text-center text-blue-600 mb-4">Productos por Categoría</h2>
             <ResponsiveContainer width="100%" height={400}>
               <BarChart data={productData}>
                 <CartesianGrid strokeDasharray="3 3" />

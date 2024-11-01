@@ -1,3 +1,4 @@
+// Sales.js
 import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
 import { getProducts } from '../components/productoDB'; 
@@ -25,18 +26,11 @@ const Sales = () => {
   useEffect(() => {
     const loadData = async () => {
       const db = await openDB();
-      const salesData = await getAllSales(db);
-      setSales(salesData);
-
-      const storedProducts = await getProducts();
-      const storedClients = await loadClients();
-      const storedEmployees = await fetchEmployees();
-
-      setProducts(storedProducts);
-      setClients(storedClients);
-      setEmployees(storedEmployees);
+      setSales(await getAllSales(db));
+      setProducts(await getProducts());
+      setClients(await loadClients());
+      setEmployees(await fetchEmployees());
     };
-
     loadData();
   }, []);
 
@@ -52,7 +46,7 @@ const Sales = () => {
   };
 
   const addProductInput = () => {
-    setFormData((prev) => ({
+    setFormData(prev => ({
       ...prev,
       productInputs: [...prev.productInputs, '']
     }));
@@ -104,14 +98,9 @@ const Sales = () => {
       warranty: formData.warranty
     };
 
-    const updatedSales = editingSale
-      ? sales.map((sale) => (sale._id === editingSale._id ? newSale : sale))
-      : [...sales, newSale];
-
-    setSales(updatedSales);
-
     const db = await openDB();
-    saveSale(db, newSale);
+    await saveSale(db, newSale);
+    setSales(await getAllSales(db));
 
     setFormData({
       productInputs: [''],
@@ -121,7 +110,6 @@ const Sales = () => {
       date: '',
       warranty: ''
     });
-
     setEditingSale(null);
   };
 
@@ -139,19 +127,17 @@ const Sales = () => {
 
   const handleDelete = async (saleId) => {
     if (window.confirm('¿Estás seguro de que deseas eliminar esta venta?')) {
-      const updatedSales = sales.filter(sale => sale._id !== saleId);
-      setSales(updatedSales);
-
       const db = await openDB();
-      deleteSale(db, saleId);
+      await deleteSale(db, saleId);
+      setSales(await getAllSales(db));
     }
   };
 
   return (
     <Layout>
-      <div className="p-8">
-        <h3 className="text-3xl font-bold mb-6 text-gray-800">Generar Nueva Venta</h3>
-        <form onSubmit={handleSubmit} className="space-y-4 bg-white p-6 rounded-lg shadow-md">
+      <div className="p-8 bg-gray-100 min-h-screen">
+        <h3 className="text-4xl font-bold mb-8 text-center text-blue-600">Generar Nueva Venta</h3>
+        <form onSubmit={handleSubmit} className="space-y-4 bg-white p-8 rounded-xl shadow-lg">
           {formData.productInputs.map((input, index) => (
             <div key={index} className="flex space-x-2">
               <input
@@ -159,13 +145,13 @@ const Sales = () => {
                 placeholder="Nombre del Producto o Código de Barra"
                 value={input}
                 onChange={(e) => handleProductInputChange(index, e.target.value)}
-                className="border p-2 w-full rounded-lg"
+                className="border border-gray-300 p-3 w-full rounded-lg focus:outline-none focus:border-blue-500 transition duration-300"
                 required
               />
               <button 
                 type="button" 
                 onClick={() => removeProductInput(index)} 
-                className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition">
+                className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition duration-300">
                 Eliminar
               </button>
             </div>
@@ -173,7 +159,7 @@ const Sales = () => {
           <button 
             type="button" 
             onClick={addProductInput} 
-            className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">
+            className="w-full py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition duration-300">
             Agregar Producto
           </button>
           <input
@@ -182,7 +168,7 @@ const Sales = () => {
             placeholder="NIT, DPI o Teléfono del Cliente"
             value={formData.clientInput}
             onChange={handleInputChange}
-            className="border p-2 w-full rounded-lg"
+            className="border border-gray-300 p-3 w-full rounded-lg focus:outline-none focus:border-blue-500 transition duration-300"
             required
           />
           <input
@@ -191,7 +177,7 @@ const Sales = () => {
             placeholder="ID del Empleado"
             value={formData.employeeInput}
             onChange={handleInputChange}
-            className="border p-2 w-full rounded-lg"
+            className="border border-gray-300 p-3 w-full rounded-lg focus:outline-none focus:border-blue-500 transition duration-300"
             required
           />
           <input
@@ -200,7 +186,7 @@ const Sales = () => {
             placeholder="Monto"
             value={formData.amount}
             onChange={handleInputChange}
-            className="border p-2 w-full rounded-lg"
+            className="border border-gray-300 p-3 w-full rounded-lg focus:outline-none focus:border-blue-500 transition duration-300"
             required
           />
           <input
@@ -208,7 +194,7 @@ const Sales = () => {
             name="date"
             value={formData.date}
             onChange={handleInputChange}
-            className="border p-2 w-full rounded-lg"
+            className="border border-gray-300 p-3 w-full rounded-lg focus:outline-none focus:border-blue-500 transition duration-300"
             required
           />
           <input
@@ -217,20 +203,20 @@ const Sales = () => {
             placeholder="Garantía"
             value={formData.warranty}
             onChange={handleInputChange}
-            className="border p-2 w-full rounded-lg"
+            className="border border-gray-300 p-3 w-full rounded-lg focus:outline-none focus:border-blue-500 transition duration-300"
             required
           />
           <button 
             type="submit" 
-            className="w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+            className="w-full py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition duration-300">
             {editingSale ? 'Actualizar Venta' : 'Registrar Venta'}
           </button>
         </form>
 
-        <h3 className="text-3xl font-bold mt-8 mb-6 text-gray-800">Ventas Registradas</h3>
-        <ul className="space-y-4">
+        <h3 className="text-4xl font-bold mt-12 mb-6 text-center text-blue-600">Ventas Registradas</h3>
+        <ul className="space-y-6">
           {sales.map((sale) => (
-            <li key={sale._id} className="p-4 bg-white rounded-lg shadow-md flex justify-between items-center">
+            <li key={sale._id} className="p-6 bg-white rounded-lg shadow-md flex justify-between items-center">
               <div>
                 <p><strong>Productos:</strong> {sale.products.map(p => p.name).join(', ')}</p>
                 <p><strong>Cliente:</strong> {sale.client.name} ({sale.client.nit || sale.client.dpi || sale.client.phone})</p>
@@ -239,16 +225,16 @@ const Sales = () => {
                 <p><strong>Fecha:</strong> {sale.date}</p>
                 <p><strong>Garantía:</strong> {sale.warranty}</p>
               </div>
-              <div className="space-x-2">
+              <div className="space-x-3">
                 <button
                   onClick={() => handleEdit(sale)}
-                  className="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition"
+                  className="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition duration-300"
                 >
                   Editar
                 </button>
                 <button
                   onClick={() => handleDelete(sale._id)}
-                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition duration-300"
                 >
                   Eliminar
                 </button>
