@@ -9,7 +9,7 @@ const AdminSidebar = () => {
     { to: "/admin-ventas", icon: FaShopify, label: "Ventas" },
     { to: "/admin-clientes", icon: FaUser, label: "Clientes" },
     { to: "/admin-productos", icon: FaSearchDollar, label: "Productos" },
-    { to: "/admin-administrar", icon: FaCogs, label: "Administrar" },
+    // { to: "/admin-administrar", icon: FaCogs, label: "Administrar" },
   ];
 
   return (
