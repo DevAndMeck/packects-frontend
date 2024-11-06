@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Layout from '../components/Layout';
 import { loadClients, addClient, saveEditedClient, deleteClient } from '../components/clientBD';
 import { Search } from 'lucide-react'; // Asegúrate de tener lucide-react instalado
@@ -10,8 +10,12 @@ const Clients = () => {
   const [editingClient, setEditingClient] = useState(null);
 
   const fetchClients = async () => {
-    const allClients = await loadClients();
-    setClients(allClients);
+    try {
+      const allClients = await loadClients();
+      setClients(allClients);
+    } catch (error) {
+      console.error("Error al cargar los clientes:", error);
+    }
   };
 
   useEffect(() => {
@@ -19,30 +23,44 @@ const Clients = () => {
   }, []);
 
   const handleAddClient = async () => {
-    const id = await addClient(newClient);
-    setClients([...clients, { ...newClient, id }]);
-    setNewClient({ name: '', address: '', email: '', dpi: '', nit: '', phone: '' });
+    try {
+      const id = await addClient(newClient);
+      setClients([...clients, { ...newClient, id }]);
+      setNewClient({ name: '', address: '', email: '', dpi: '', nit: '', phone: '' });
+    } catch (error) {
+      console.error("Error al agregar el cliente:", error);
+    }
   };
 
   const handleEditClient = async () => {
-    await saveEditedClient(editingClient);
-    setClients(clients.map(client => client.id === editingClient.id ? editingClient : client));
-    setEditingClient(null);
+    try {
+      await saveEditedClient(editingClient);
+      setClients(clients.map(client => client.id === editingClient.id ? editingClient : client));
+      setEditingClient(null);
+    } catch (error) {
+      console.error("Error al editar el cliente:", error);
+    }
   };
 
   const handleDeleteClient = async (id) => {
     const confirmed = window.confirm("¿Estás seguro de que deseas eliminar este cliente?");
     if (confirmed) {
-      await deleteClient(id);
-      setClients(clients.filter(client => client.id !== id));
+      try {
+        await deleteClient(id);
+        setClients(clients.filter(client => client.id !== id));
+      } catch (error) {
+        console.error("Error al eliminar el cliente:", error);
+      }
     }
   };
 
-  const filteredClients = clients.filter(client =>
-    client.dpi.includes(searchTerm) ||
-    client.nit.includes(searchTerm) ||
-    client.phone.includes(searchTerm)
-  );
+  const filteredClients = useMemo(() => {
+    return clients.filter(client =>
+      (client.dpi || "").includes(searchTerm) ||
+      (client.nit || "").includes(searchTerm) ||
+      (client.phone || "").includes(searchTerm)
+    );
+  }, [clients, searchTerm]);
 
   return (
     <Layout>
