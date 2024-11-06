@@ -67,9 +67,9 @@ const UserRegister = () => {
     return (
         <Layout>
             <div className="max-w-6xl mx-auto p-8 bg-white shadow-lg rounded-lg">
-                <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">Crear Usuario</h2>
+                <h2 className="text-4xl font-bold text-center text-blue-600 mb-8">Crear Usuario</h2>
                 {error && <div className="text-red-500 text-center mb-4">{error}</div>}
-                <form onSubmit={handleSubmit} className="mb-6 space-y-4">
+                <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-lg mb-8">
                     <div>
                         <label htmlFor="name" className="block text-sm font-semibold text-gray-700">Nombre</label>
                         <input
@@ -130,7 +130,7 @@ const UserRegister = () => {
                     </div>
                 </form>
 
-                <div className="overflow-x-auto">
+                {/* <div className="overflow-x-auto">
                     <table className="min-w-full text-sm text-gray-600">
                         <thead className="bg-gray-100">
                             <tr>
@@ -166,7 +166,7 @@ const UserRegister = () => {
                             ))}
                         </tbody>
                     </table>
-                </div>
+                </div> */}
             </div>
         </Layout>
     );
