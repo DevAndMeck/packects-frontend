@@ -6,6 +6,7 @@ import AdminClients from './pages/AdminClients';
 import AdminEmployees from './pages/AdminEmployes';
 import AdminProducts from './pages/AdminProducts';
 import AdminSales from './pages/AdminSales';
+import AdminUserRegistrer from './pages/AdminUserRegister';
 // import Navbar from './components/dashboard/Navbar';
 // import AdminSidebar from './components/dashboard/AdminSidebar';
 
@@ -22,6 +23,7 @@ function App() {
         <Route path="/admin-ventas" element={<AdminSales />} />
         <Route path="/admin-clientes" element={<AdminClients />} />
         <Route path="/admin-productos" element={<AdminProducts />} />
+        <Route path="/admin-administrar" element={<AdminUserRegistrer/>}/>
         <Route path='/employees-dashboard' element={<EmployeeDashboard/>}></Route>
       </Routes>
     </BrowserRouter>
