@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import Layout from '../components/Layout';
 import { loadClients, addClient, saveEditedClient, deleteClient } from '../components/clientBD';
-import { Search } from 'lucide-react'; // Asegúrate de tener lucide-react instalado
+import { ReactComponent as Search } from '/assets/search.svg';
+
 
 const Clients = () => {
   const [clients, setClients] = useState([]);
