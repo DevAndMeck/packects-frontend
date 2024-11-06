@@ -24,7 +24,7 @@ export const Login = () => {
                 if (response.data.user.role === "admin") {
                     navigate('/admin-dashboard');
                 } else {
-                    navigate('/employee-dashboard');
+                    navigate('/employees-dashboard');
                 }
             } else {
                 setError(response.data.error || "Error desconocido");
@@ -36,7 +36,7 @@ export const Login = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-600 to-yellow-700 p-4">
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-600 to-slate-950 p-4">
             <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-xl shadow-2xl transform transition-all duration-500 ease-in-out hover:scale-105">
                 <div className="text-center">
                     <img src="/assets/logo.png" alt="Logo de la empresa" className="mx-auto h-28 w-auto animate-pulse" />
@@ -99,11 +99,11 @@ export const Login = () => {
                             </label>
                         </div>
 
-                        <div className="text-sm">
+                        {/* <div className="text-sm">
                             <a href="#" className="font-medium text-blue-600 hover:text-blue-500">
                                 ¿Olvidaste tu contraseña?
                             </a>
-                        </div>
+                        </div> */}
                     </div>
 
                     {error && (

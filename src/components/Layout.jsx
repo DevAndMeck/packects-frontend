@@ -1,18 +1,23 @@
+// Layout.jsx
 import React from 'react';
 import AdminSidebar from './dashboard/AdminSidebar';
+import EmployeesSidebar from './dashboard/EmployeesSidebar';
 import Navbar from './dashboard/Navbar';
+import { useAuth } from '../context/authContext';
 
 const Layout = ({ children }) => {
-  return (
-    <div className='flex'>
-      {/* Sidebar */}
-      <AdminSidebar />
+  const { user } = useAuth();
 
-      {/* Contenido principal con el Navbar */}
-      <div className='flex-1 ml-64 bg-gray-100 min-h-screen'>
+  return (
+    <div className="flex">
+      {/* Mostrar AdminSidebar solo si el usuario es admin */}
+      {user?.role === 'admin' && <AdminSidebar />}
+      {/* Mostrar EmployeesSidebar solo si el usuario es empleado */}
+      {user?.role === 'employee' && <EmployeesSidebar />}
+      
+      <div className="flex-1 ml-64 bg-gray-100 min-h-screen">
         <Navbar />
-        {/* Contenido dinámico que será pasado a través de children */}
-        <div className='p-6'>
+        <div className="p-6">
           {children}
         </div>
       </div>
