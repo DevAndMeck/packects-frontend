@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import Layout from '../components/Layout';
 import { loadClients, addClient, saveEditedClient, deleteClient } from '../components/clientBD';
-import { ReactComponent as Search } from '/assets/search.svg';
-
+import searchIcon from '/assets/search.svg';
 
 const Clients = () => {
   const [clients, setClients] = useState([]);
@@ -70,7 +69,11 @@ const Clients = () => {
 
         <div className="mb-8 flex items-center">
           <div className="relative w-full">
-            <Search className="absolute left-3 top-3 text-gray-500" />
+          <img
+              src={searchIcon}
+              alt="Search icon"
+              className="absolute left-3 top-3 text-gray-500 w-5 h-5"
+            />
             <input
               type="text"
               placeholder="Buscar por DPI, NIT o Teléfono"
